@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 
+// Removed OpenCV dependency to prevent memory issues
+
 // Components
 import Header from './components/Header';
 import HomeScreen from './components/HomeScreen';
@@ -24,6 +26,8 @@ function App() {
       setDarkMode(true);
       document.documentElement.classList.add('dark');
     }
+
+    // App initialization complete
   }, []);
 
   const toggleDarkMode = () => {

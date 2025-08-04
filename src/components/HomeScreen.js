@@ -5,12 +5,7 @@ import {
   Upload, 
   Camera, 
   FileImage, 
-  FileText, 
-  Zap, 
   CheckCircle,
-  AlertCircle,
-  Sparkles,
-  Scan,
   Maximize
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
@@ -72,24 +67,24 @@ function HomeScreen({ setIsLoading }) {
 
   const features = [
     {
-      icon: Scan,
-      title: 'Auto-Scan & Correct',
-      description: 'Automatically detect, straighten, and enhance documents from any angle'
+      icon: FileImage,
+      title: 'Photo Upload',
+      description: 'Upload and view your photos in a clean, simple interface'
     },
     {
       icon: Maximize,
-      title: 'Perspective Correction',
-      description: 'Transform tilted photos into perfect front-facing scans'
+      title: 'Photo Preview',
+      description: 'View your photos in full size with basic rotation options'
     },
     {
-      icon: Zap,
-      title: 'AI Enhancement',
-      description: 'Advanced AI algorithms for deblurring, sharpening, and clarity improvement'
+      icon: CheckCircle,
+      title: 'Simple & Fast',
+      description: 'Lightweight app that loads quickly without heavy processing'
     },
     {
-      icon: Sparkles,
-      title: 'Batch Processing',
-      description: 'Process multiple files at once for maximum efficiency'
+      icon: Camera,
+      title: 'Easy Access',
+      description: 'Drag & drop or click to upload photos from your device'
     }
   ];
 
@@ -98,12 +93,12 @@ function HomeScreen({ setIsLoading }) {
       {/* Hero Section */}
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-          Smart Auto-Scan Corrector
-          <span className="block text-primary-600 dark:text-primary-400">AI-Powered Document Scanner</span>
+          Simple Photo App
+          <span className="block text-primary-600 dark:text-primary-400">Clean & Fast Photo Viewer</span>
         </h1>
         <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-          Transform any poorly taken photo into a professional scan. Our AI automatically 
-          detects, straightens, and enhances documents from any angle or lighting condition.
+          Upload, view, and manage your photos with ease. A lightweight, fast photo gallery 
+          that works reliably without complex processing or heavy dependencies.
         </p>
       </div>
 
@@ -220,12 +215,12 @@ function HomeScreen({ setIsLoading }) {
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Photos & Images</span>
           </div>
           <div className="flex items-center space-x-2 px-4 py-3 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
-            <FileText className="w-5 h-5 text-red-500" />
+            <FileImage className="w-5 h-5 text-red-500" />
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">PDF Documents</span>
           </div>
           <div className="flex items-center space-x-2 px-4 py-3 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
-            <Scan className="w-5 h-5 text-green-500" />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Handwritten Notes</span>
+            <FileImage className="w-5 h-5 text-green-500" />
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">All File Types</span>
           </div>
         </div>
         <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-4">
