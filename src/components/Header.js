@@ -6,14 +6,11 @@ import {
   Settings, 
   Moon, 
   Sun, 
-  Zap,
-  Accessibility
+  Camera
 } from 'lucide-react';
-import { useApp } from '../context/AppContext';
 
 function Header({ darkMode, toggleDarkMode }) {
   const location = useLocation();
-  const { state } = useApp();
 
   const navItems = [
     { path: '/', icon: Home, label: 'Home', ariaLabel: 'Go to home page' },
@@ -28,13 +25,14 @@ function Header({ darkMode, toggleDarkMode }) {
           {/* Logo and Brand */}
           <Link 
             to="/" 
-            className="flex items-center space-x-2 text-xl font-bold text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors focus-visible"
-            aria-label="AI Photo PDF Enhancer - Go to home"
+            className="flex items-center space-x-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+            aria-label="Simple Photo App - Home"
           >
-            <div className="p-2 bg-gradient-to-r from-primary-500 to-blue-600 rounded-lg">
-              <Zap className="w-6 h-6 text-white" />
+            <Camera className="h-8 w-8" />
+            <div>
+              <h1 className="text-xl font-bold">Simple Photo App</h1>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Clean & Fast Photo Viewer</p>
             </div>
-            <span className="hidden sm:block">AI Enhancer</span>
           </Link>
 
           {/* Navigation */}
@@ -59,20 +57,8 @@ function Header({ darkMode, toggleDarkMode }) {
             ))}
           </nav>
 
-          {/* Theme Toggle and Accessibility */}
+          {/* Theme Toggle */}
           <div className="flex items-center space-x-2">
-            {/* High Contrast Toggle */}
-            <button
-              onClick={() => {
-                const newContrast = !state.settings.highContrast;
-                document.documentElement.classList.toggle('high-contrast', newContrast);
-              }}
-              className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus-visible"
-              aria-label={`${state.settings.highContrast ? 'Disable' : 'Enable'} high contrast mode`}
-              title="Toggle high contrast"
-            >
-              <Accessibility className="w-5 h-5" />
-            </button>
 
             {/* Dark Mode Toggle */}
             <button

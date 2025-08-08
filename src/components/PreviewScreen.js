@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, RotateCw, Download, Zap } from 'lucide-react';
 
@@ -6,26 +6,77 @@ function PreviewScreen() {
   const navigate = useNavigate();
   const location = useLocation();
   const [rotation, setRotation] = useState(0);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [processedImage, setProcessedImage] = useState(null);
+  const [enhanced, setEnhanced] = useState(false);
+  const [enhancedImageUrl, setEnhancedImageUrl] = useState(null);
+  const canvasRef = useRef(null);
   
   // Get image from navigation state
-  const imageFile = location.state?.file;
+  const fileData = location.state?.fileData;
+  const imageFile = fileData?.file;
 
   useEffect(() => {
-    if (!imageFile) {
+    if (!fileData || !imageFile) {
       navigate('/');
       return;
     }
-  }, [imageFile, navigate]);
+  }, [fileData, imageFile, navigate]);
 
   const rotateImage = () => {
     setRotation(prev => (prev + 90) % 360);
   };
 
-  const handleEnhance = () => {
-    // Simple enhancement - just show a success message
-    alert('Photo enhanced! (Demo feature)');
+  const handleEnhance = async () => {
+    if (!imageFile || imageFile.type === 'application/pdf') {
+      alert('Enhancement is only available for image files.');
+      return;
+    }
+
+    try {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size to match image
+        canvas.width = img.width;
+        canvas.height = img.height;
+        
+        // Draw original image
+        ctx.drawImage(img, 0, 0);
+        
+        // Get image data
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        
+        // Apply enhancements
+        for (let i = 0; i < data.length; i += 4) {
+          // Increase brightness by 20
+          data[i] = Math.min(255, data[i] + 20);     // Red
+          data[i + 1] = Math.min(255, data[i + 1] + 20); // Green
+          data[i + 2] = Math.min(255, data[i + 2] + 20); // Blue
+          
+          // Increase contrast by 10%
+          data[i] = Math.min(255, Math.max(0, (data[i] - 128) * 1.1 + 128));
+          data[i + 1] = Math.min(255, Math.max(0, (data[i + 1] - 128) * 1.1 + 128));
+          data[i + 2] = Math.min(255, Math.max(0, (data[i + 2] - 128) * 1.1 + 128));
+        }
+        
+        // Put enhanced image data back
+        ctx.putImageData(imageData, 0, 0);
+        
+        // Convert canvas to blob and create URL
+        canvas.toBlob((blob) => {
+          const enhancedUrl = URL.createObjectURL(blob);
+          setEnhancedImageUrl(enhancedUrl);
+          setEnhanced(true);
+        }, 'image/jpeg', 0.9);
+      };
+      
+      img.src = imageUrl;
+    } catch (error) {
+      console.error('Enhancement failed:', error);
+      alert('Enhancement failed. Please try again.');
+    }
   };
 
   const handleDownload = () => {
@@ -41,11 +92,12 @@ function PreviewScreen() {
     URL.revokeObjectURL(url);
   };
 
-  if (!imageFile) {
+  if (!fileData || !imageFile) {
     return null;
   }
 
-  const imageUrl = URL.createObjectURL(imageFile);
+  const imageUrl = fileData.url || URL.createObjectURL(imageFile);
+  const displayUrl = enhanced && enhancedImageUrl ? enhancedImageUrl : imageUrl;
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -82,11 +134,16 @@ function PreviewScreen() {
             <div className="p-6">
               <div className="relative bg-gray-50 rounded-lg overflow-hidden">
                 <img
-                  src={processedImage || imageUrl}
+                  src={displayUrl}
                   alt="Preview"
                   className="w-full h-auto max-h-96 object-contain mx-auto"
                   style={{ transform: `rotate(${rotation}deg)` }}
                 />
+                {enhanced && (
+                  <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded text-xs">
+                    Enhanced
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -102,11 +159,15 @@ function PreviewScreen() {
             <div className="space-y-3">
               <button
                 onClick={handleEnhance}
-                disabled={isProcessing}
-                className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                disabled={enhanced}
+                className={`w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-lg transition-colors ${
+                  enhanced 
+                    ? 'bg-green-600 text-white cursor-not-allowed' 
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
               >
                 <Zap className="w-4 h-4" />
-                <span>{isProcessing ? 'Processing...' : 'Enhance'}</span>
+                <span>{enhanced ? 'Enhanced!' : 'Enhance'}</span>
               </button>
               
               <button
@@ -140,15 +201,8 @@ function PreviewScreen() {
         </div>
       </div>
 
-      {/* Processing Status */}
-      {isProcessing && (
-        <div className="fixed bottom-6 right-6 bg-blue-600 text-white px-6 py-4 rounded-lg shadow-lg">
-          <div className="flex items-center space-x-3">
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-            <span className="font-medium">Processing image...</span>
-          </div>
-        </div>
-      )}
+      {/* Hidden canvas for image processing */}
+      <canvas ref={canvasRef} style={{ display: 'none' }} />
     </div>
   );
 }

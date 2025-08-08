@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Sliders, 
   ToggleLeft, 
   ToggleRight, 
   Type, 
-  Contrast, 
   Volume2,
   Save,
   RotateCcw,
@@ -12,25 +11,32 @@ import {
   Shield,
   Zap
 } from 'lucide-react';
-import { useApp } from '../context/AppContext';
 
 function SettingsScreen() {
-  const { state, actions } = useApp();
-  const { settings } = state;
+  const [settings, setSettings] = useState({
+    darkMode: false,
+    highContrast: false,
+    fontSize: 'medium',
+    soundEnabled: true,
+    autoSave: true,
+    cloudSync: false,
+    privacyMode: false
+  });
 
   const handleSettingChange = (key, value) => {
-    actions.updateSettings({ [key]: value });
+    setSettings(prev => ({ ...prev, [key]: value }));
   };
 
   const resetSettings = () => {
     if (window.confirm('Are you sure you want to reset all settings to default?')) {
-      actions.updateSettings({
-        enhancementIntensity: 'medium',
-        autoAlignment: true,
-        denoising: true,
-        autoSave: false,
+      setSettings({
+        darkMode: false,
         highContrast: false,
-        fontSize: 'medium'
+        fontSize: 'medium',
+        soundEnabled: true,
+        autoSave: true,
+        cloudSync: false,
+        privacyMode: false
       });
     }
   };
@@ -210,7 +216,7 @@ function SettingsScreen() {
                 Storage Usage
               </h3>
               <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
-                {state.processingHistory.length} files in history
+                0 files in history
               </p>
               <button
                 onClick={() => {

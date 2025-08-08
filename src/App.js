@@ -12,9 +12,6 @@ import HistoryScreen from './components/HistoryScreen';
 import SettingsScreen from './components/SettingsScreen';
 import LoadingSpinner from './components/LoadingSpinner';
 
-// Context
-import { AppProvider } from './context/AppContext';
-
 function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
@@ -26,8 +23,6 @@ function App() {
       setDarkMode(true);
       document.documentElement.classList.add('dark');
     }
-
-    // App initialization complete
   }, []);
 
   const toggleDarkMode = () => {
@@ -42,12 +37,11 @@ function App() {
   };
 
   return (
-    <AppProvider>
-      <Router>
-        <div className={`min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 ${darkMode ? 'dark' : ''}`}>
-          <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-          
-          {isLoading && <LoadingSpinner />}
+    <Router>
+      <div className={`min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 ${darkMode ? 'dark' : ''}`}>
+        <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+        
+        {isLoading && <LoadingSpinner />}
           
           <main className="container mx-auto px-4 py-8">
             <Routes>
@@ -59,8 +53,7 @@ function App() {
           </main>
         </div>
       </Router>
-    </AppProvider>
-  );
+    );
 }
 
 export default App;

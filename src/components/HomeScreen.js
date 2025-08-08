@@ -8,13 +8,11 @@ import {
   CheckCircle,
   Maximize
 } from 'lucide-react';
-import { useApp } from '../context/AppContext';
-import DemoShowcase from './DemoShowcase';
 
 function HomeScreen({ setIsLoading }) {
   const navigate = useNavigate();
-  const { actions } = useApp();
   const [dragActive, setDragActive] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
 
   const onDrop = useCallback(async (acceptedFiles) => {
     if (acceptedFiles.length > 0) {
@@ -23,30 +21,41 @@ function HomeScreen({ setIsLoading }) {
       // Validate file type
       const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
       if (!validTypes.includes(file.type)) {
-        actions.setError('Please upload a valid image (JPEG, PNG, WebP) or PDF file.');
+        alert('Please upload a valid image (JPEG, PNG, WebP) or PDF file.');
         return;
       }
 
       // Validate file size (max 10MB)
       if (file.size > 10 * 1024 * 1024) {
-        actions.setError('File size must be less than 10MB.');
+        alert('File size must be less than 10MB.');
         return;
       }
 
       setIsLoading(true);
-      actions.setCurrentFile(file);
-      actions.setOriginalFile(file);
+      
+      // Create file URL for preview
+      const fileUrl = URL.createObjectURL(file);
+      const fileData = {
+        file,
+        url: fileUrl,
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        uploadedAt: new Date().toISOString()
+      };
+      
+      // Add to uploaded files
+      setUploadedFiles(prev => [fileData, ...prev]);
       
       // Simulate upload progress
-      for (let i = 0; i <= 100; i += 10) {
-        actions.setUploadProgress(i);
-        await new Promise(resolve => setTimeout(resolve, 50));
+      for (let i = 0; i <= 100; i += 20) {
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
       
       setIsLoading(false);
-      navigate('/preview');
+      navigate('/preview', { state: { fileData } });
     }
-  }, [actions, navigate, setIsLoading]);
+  }, [navigate, setIsLoading]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -102,8 +111,7 @@ function HomeScreen({ setIsLoading }) {
         </p>
       </div>
 
-      {/* Demo Showcase */}
-      <DemoShowcase />
+      {/* Features showcase removed for simplicity */}
 
       {/* Upload Section */}
       <div className="mb-12">

@@ -6,8 +6,7 @@ import {
   Zap, 
   ArrowRight,
   CheckCircle,
-  Camera,
-  FileText
+  Camera
 } from 'lucide-react';
 
 function DemoShowcase() {
