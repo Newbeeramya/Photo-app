@@ -12,7 +12,6 @@ import {
 function HomeScreen({ setIsLoading }) {
   const navigate = useNavigate();
   const [dragActive, setDragActive] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
 
   const onDrop = useCallback(async (acceptedFiles) => {
     if (acceptedFiles.length > 0) {
@@ -44,8 +43,7 @@ function HomeScreen({ setIsLoading }) {
         uploadedAt: new Date().toISOString()
       };
       
-      // Add to uploaded files
-      setUploadedFiles(prev => [fileData, ...prev]);
+      // File processed successfully
       
       // Simulate upload progress
       for (let i = 0; i <= 100; i += 20) {

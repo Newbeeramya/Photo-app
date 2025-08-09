@@ -2,7 +2,7 @@
   "name": "photo-app-minimal",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://newbeeramya.github.io/photo-app",
+  "homepage": "https://Newbeeramya.github.io/Photo-app",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
